@@ -11,15 +11,47 @@ import (
 
 // HvacSensorData representa os dados mocados de um sensor HVAC
 type HvacSensorData struct {
-	Timestamp           time.Time `json:"timestamp"`
-	InternalTemperature float64   `json:"internalTemperature"`
-	SetPointTemperature float64   `json:"setPointTemperature"`
-	SystemStatus        string    `json:"systemStatus"`
-	OccupancyStatus     bool      `json:"occupancyStatus"`
-	PowerConsumptionKwH float64   `json:"powerConsumptionKwH"`
-	OutdoorTemperature  float64   `json:"outdoorTemperature"`
-	OutdoorHumidity     float64   `json:"outdoorHumidity"`
-	DeviceId            string    `json:"deviceId"`
+    // Timestamp: O momento exato em que os dados do sensor foram "coletados".
+    // Formato ISO 8601 (e.g., "2024-01-01T15:00:00Z").
+    Timestamp time.Time `json:"timestamp"`
+
+    // InternalTemperature: A temperatura ambiente medida dentro do espaço
+    // onde o sensor HVAC está localizado, em graus Celsius.
+    InternalTemperature float64 `json:"internalTemperature"`
+
+    // SetPointTemperature: A temperatura alvo que o sistema HVAC está configurado
+    // para manter, definida pelo usuário ou por um algoritmo de controle, em graus Celsius.
+    SetPointTemperature float64 `json:"setPointTemperature"`
+
+    // SystemStatus: O estado operacional atual do sistema HVAC.
+    // Exemplos de valores: "OFF", "COOLING" (resfriando), "HEATING" (aquecendo),
+    // "FAN_ONLY" (apenas ventilação), "IDLE" (ocioso).
+    SystemStatus string `json:"systemStatus"`
+
+    // OccupancyStatus: Indica se o espaço onde o sensor está localizado está ocupado
+    // no momento da coleta dos dados (true) ou desocupado (false).
+    // Fundamental para correlacionar consumo e comportamento com a presença humana.
+    OccupancyStatus bool `json:"occupancyStatus"`
+
+    // PowerConsumptionKwH: O consumo de energia elétrica do sistema HVAC
+    // no período de amostragem, em Quilowatt-hora (kWh).
+    // Este valor é simulado com base no status do sistema, temperatura externa e ocupação.
+    PowerConsumptionKwH float64 `json:"powerConsumptionKwH"`
+
+    // OutdoorTemperature: A temperatura do ar externo no momento da coleta dos dados,
+    // em graus Celsius. Estes dados são provenientes da estação INMET.
+    // Crucial para entender a demanda do sistema HVAC.
+    OutdoorTemperature float64 `json:"outdoorTemperature"`
+
+    // OutdoorHumidity: A umidade relativa do ar externo no momento da coleta dos dados,
+    // em porcentagem (%). Estes dados são provenientes da estação INMET.
+    // Também influencia a carga térmica e o conforto.
+    OutdoorHumidity float64 `json:"outdoorHumidity"`
+
+    // DeviceId: Um identificador único para o dispositivo ou unidade HVAC que gerou os dados.
+    // Permite distinguir dados de diferentes sistemas ou localizações.
+    // Exemplo: "HVAC-UNIT-1", "HVAC-UNIT-A701-001".
+    DeviceId string `json:"deviceId"`
 }
 
 // Criar uma variável global para o gerador de números aleatórios.
