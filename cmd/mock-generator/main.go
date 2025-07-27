@@ -3,20 +3,25 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"github.com/joho/godotenv"
 
 	"github.com/patrik-rangel/mock-data-hvac/internal/climate"
 	"github.com/patrik-rangel/mock-data-hvac/internal/hvac"
+	"github.com/patrik-rangel/mock-data-hvac/internal/s3"
 )
 
 func main() {
-	// 1. Carregar variáveis de ambiente (ainda útil para outras configs futuras, mas S3_BUCKET_NAME e AWS_REGION não serão usados aqui)
 	err := godotenv.Load()
 	if err != nil {
 		log.Println("Aviso: Não foi possível carregar o arquivo .env. Erro:", err)
 	}
+
+	bucketName := os.Getenv("S3_BUCKET_NAME")
+	awsRegion := os.Getenv("AWS_REGION")
+	endpointUrl := os.Getenv("ENDPOINT_URL")
 
 	// 3. Definir o caminho do arquivo CSV do INMET
 	inmetCSVPath := "data/inmet/dados-202401-202501.zip"
@@ -52,16 +57,15 @@ func main() {
 	}
 	fmt.Println("Dados HVAC convertidos para JSON com sucesso.")
 
-	// 7. Definir o nome do arquivo JSON local
-	localFileName := fmt.Sprintf("hvac_mock_data_A701_%s.json", time.Now().Format("20060102_150405"))
+	// 7. Definir o nome do arquivo JSON no bucket
+	localFileName := fmt.Sprintf("hvac_mock_data_%s.json", time.Now())
 
-	fmt.Printf("Salvando dados JSON localmente como: %s\n", localFileName)
+	fmt.Printf("Salvando dados JSON no bucket como: %s\n", localFileName)
 
-	// 8. Salvar o JSON em um arquivo local usando a nova função do pacote 'hvac'
-	err = hvac.SaveJSONLocally(jsonData, localFileName)
+	err = s3.UploadDataToS3(bucketName, awsRegion, endpointUrl, jsonData, localFileName)
 	if err != nil {
-		log.Fatalf("Erro fatal ao salvar o JSON localmente: %v", err)
+		log.Fatalf("Erro fatal ao salvar o JSON no bucket: %v", err)
 	}
 
-	fmt.Println("Processo concluído com sucesso! Dados mocados salvos localmente.")
+	fmt.Println("Processo concluído com sucesso! Dados mocados salvos no s3.")
 }
