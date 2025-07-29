@@ -58,7 +58,7 @@ func main() {
 	fmt.Println("Dados HVAC convertidos para JSON com sucesso.")
 
 	// 7. Definir o nome do arquivo JSON no bucket
-	localFileName := fmt.Sprintf("hvac_mock_data_%s.json", time.Now())
+	localFileName := fmt.Sprintf("hvac_mock_data_A701_%s.json", time.Now().Format("20060102_150405"))
 
 	fmt.Printf("Salvando dados JSON no bucket como: %s\n", localFileName)
 
