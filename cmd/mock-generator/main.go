@@ -67,5 +67,10 @@ func main() {
 		log.Fatalf("Erro fatal ao salvar o JSON no bucket: %v", err)
 	}
 
+	// err = hvac.SaveJSONLocally(jsonData, localFileName)
+	// if err != nil {
+	// 	log.Fatalf("Erro fatal ao salvar o JSON localmente: %v", err)
+	// }
+
 	fmt.Println("Processo concluído com sucesso! Dados mocados salvos no s3.")
 }
