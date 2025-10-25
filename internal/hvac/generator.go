@@ -84,15 +84,15 @@ func GenerateHvacData(climateData climate.InmetClimateData) HvacSensorData {
 
 	// Lógica de decisão do termostato
 	systemStatus := "OFF"
-	if isOccupied {
-		if internalTempDiff > 1.5 {
-			systemStatus = "COOLING"
-		} else if internalTempDiff < -1.5 {
-			systemStatus = "HEATING"
-		} else if math.Abs(internalTempDiff) < 1.0 {
-			systemStatus = "IDLE"
-		}
-	}
+    if isOccupied {
+        if internalTempDiff > 0.5 { // Liga se estiver 0.5°C acima
+            systemStatus = "COOLING"
+        } else if internalTempDiff < -0.5 { // Liga se estiver 0.5°C abaixo
+            systemStatus = "HEATING"
+        } else { // Dentro da "banda morta" de +/- 0.5°C
+            systemStatus = "IDLE"
+        }
+    }
 
 	// Valores base para as métricas
 	supplyTemp := uncontrolledInternalTemp
