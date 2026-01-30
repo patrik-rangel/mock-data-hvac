@@ -14,18 +14,15 @@ import (
 func UploadDataToS3(bucketName, region, awsEndpointURL string, data []byte, key string) error {
 	log.Printf("Iniciando upload de '%s' para o bucket S3 '%s' na região '%s'...", key, bucketName, region)
 
-	// Opções de configuração para o SDK
 	opts := []func(*config.LoadOptions) error{
 		config.WithRegion(region),
 	}
 
-	// Se um endpoint customizado for fornecido (para LocalStack)
 	if awsEndpointURL != "" {
 		log.Printf("Usando endpoint S3 customizado: %s\n", awsEndpointURL)
 		opts = append(opts, config.WithBaseEndpoint(awsEndpointURL))
 	}
 
-	// Carrega a configuração padrão da AWS com as opções
 	cfg, err := config.LoadDefaultConfig(context.TODO(), opts...)
 	if err != nil {
 		return fmt.Errorf("falha ao carregar a configuração AWS: %w", err)

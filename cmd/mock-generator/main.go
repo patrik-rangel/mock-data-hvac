@@ -23,11 +23,9 @@ func main() {
 	awsRegion := os.Getenv("AWS_REGION")
 	endpointUrl := os.Getenv("ENDPOINT_URL")
 
-	// 3. Definir o caminho do arquivo CSV do INMET
 	inmetCSVPath := "data/inmet/dados-202401-202501.zip"
 	fmt.Printf("Lendo dados climáticos do CSV: %s\n", inmetCSVPath)
 
-	// 4. Ler os dados climáticos do CSV
 	climateRecords, err := climate.ReadInmetCSV(inmetCSVPath)
 	if err != nil {
 		log.Fatalf("Erro fatal ao ler dados do INMET: %v", err)
@@ -39,7 +37,6 @@ func main() {
 		return
 	}
 
-	// 5. Gerar os dados de sensores HVAC mocados
 	fmt.Println("Iniciando a geração de dados de sensores HVAC mocados...")
 
 	var allHvacData []hvac.HvacSensorData
@@ -49,7 +46,6 @@ func main() {
 	}
 	fmt.Printf("Gerados %d registros de dados HVAC mocados.\n", len(allHvacData))
 
-	// 6. Converter os dados HVAC mocados para JSON
 	fmt.Println("Convertendo dados HVAC para formato JSON...")
 	jsonData, err := hvac.WriteJSON(allHvacData)
 	if err != nil {
@@ -57,7 +53,6 @@ func main() {
 	}
 	fmt.Println("Dados HVAC convertidos para JSON com sucesso.")
 
-	// 7. Definir o nome do arquivo JSON no bucket
 	localFileName := fmt.Sprintf("hvac_mock_data_A701_%s.json", time.Now().Format("20060102_150405"))
 
 	fmt.Printf("Salvando dados JSON no bucket como: %s\n", localFileName)
@@ -66,11 +61,6 @@ func main() {
 	if err != nil {
 		log.Fatalf("Erro fatal ao salvar o JSON no bucket: %v", err)
 	}
-
-	// err = hvac.SaveJSONLocally(jsonData, localFileName)
-	// if err != nil {
-	// 	log.Fatalf("Erro fatal ao salvar o JSON localmente: %v", err)
-	// }
 
 	fmt.Println("Processo concluído com sucesso! Dados mocados salvos no s3.")
 }

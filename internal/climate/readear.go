@@ -29,9 +29,8 @@ func ReadInmetCSV(filepath string) ([]InmetClimateData, error) {
 		if err != nil {
 			return nil, fmt.Errorf("erro ao abrir arquivo ZIP '%s': %w", filepath, err)
 		}
-		closer = zipReader // Define para fechar o zipReader no defer
+		closer = zipReader
 
-		// Encontrar o arquivo CSV dentro do ZIP
 		var csvFile *zip.File
 		for _, f := range zipReader.File {
 			if strings.HasSuffix(strings.ToLower(f.Name), ".csv") {
@@ -44,15 +43,12 @@ func ReadInmetCSV(filepath string) ([]InmetClimateData, error) {
 			return nil, fmt.Errorf("nenhum arquivo CSV encontrado dentro do ZIP '%s'", filepath)
 		}
 
-		// Abre o arquivo CSV dentro do ZIP
 		rc, err := csvFile.Open()
 		if err != nil {
 			return nil, fmt.Errorf("erro ao abrir arquivo CSV dentro do ZIP '%s': %w", csvFile.Name, err)
 		}
 		reader = rc
-		defer rc.Close() // Fecha o ReadCloser do arquivo CSV dentro do ZIP
-		// Nota: rc.Close() libera o recurso do arquivo individual, mas o zipReader.Close()
-		// precisa ser chamado para liberar o arquivo ZIP principal.
+		defer rc.Close()
 	} else if ext == "csv" {
 		file, err := os.Open(filepath)
 		if err != nil {
